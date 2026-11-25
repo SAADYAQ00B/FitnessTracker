@@ -1,0 +1,427 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800;900&display=swap");
+
+@import "tailwindcss";
+
+@theme {
+  /* --- Emerald/Mint Defaults (Dark) --- */
+  --color-canvas: #101827;
+  --color-sidebar: #151f30;
+  --color-panel: #151f30;
+  --color-foreground: #f4f7fb;
+  --color-muted: #a7b2c3;
+  --color-lime: #16d9a0;
+  --color-ink: #071b16;
+  
+  --surface: #151f30;
+  --card: #1b293b;
+  --line: rgba(255, 255, 255, 0.09);
+  --bg: #101827;
+  --font-sans: "DM Sans", sans-serif;
+  --font-display: "Manrope", sans-serif;
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    font-family: var(--font-sans);
+    background: var(--color-canvas);
+    color: var(--color-foreground);
+    --transition-speed: 200ms;
+  }
+
+  body {
+    min-width: 320px;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--color-foreground);
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+  }
+
+  /* =========================================
+     THEME 1: EMERALD/MINT (fitness1) — DARK MODE
+     ========================================= */
+  :root[data-preset="fitness1"][data-theme="dark"],
+  :root:not([data-preset="fitness2"]):not([data-theme="light"]) {
+    color-scheme: dark;
+    --color-canvas: #101827;
+    --color-sidebar: #151f30;
+    --color-panel: #151f30;
+    --color-foreground: #f4f7fb;
+    --color-muted: #a7b2c3;
+    --color-white: #f4f7fb;
+    --color-lime: #16d9a0;
+    --primary: #16d9a0;
+    --primary-dark: #0bb886;
+    --color-ink: #071b16;
+    --surface: #151f30;
+    --card: #1b293b;
+    --line: rgba(255, 255, 255, 0.09);
+    --bg: #101827;
+  }
+  :root[data-preset="fitness1"][data-theme="dark"] body {
+    background: var(--bg);
+  }
+
+  /* =========================================
+     THEME 1: EMERALD/MINT (fitness1) — LIGHT MODE
+     ========================================= */
+  :root[data-preset="fitness1"][data-theme="light"] {
+    color-scheme: light;
+    --color-canvas: #f5f8fc;
+    --color-sidebar: #edf3f8;
+    --color-panel: #edf3f8;
+    --color-foreground: #172335;
+    --color-muted: #64748b;
+    --color-white: #172335;
+    --color-lime: #08a978;
+    --primary: #08a978;
+    --primary-dark: #078b65;
+    --color-ink: #ffffff;
+    --surface: #edf3f8;
+    --card: #ffffff;
+    --line: rgba(20, 40, 60, 0.10);
+    --bg: #f5f8fc;
+  }
+  :root[data-preset="fitness1"][data-theme="light"] body {
+    background: var(--bg);
+  }
+
+  /* =========================================
+     THEME 2: PURPLE STEEL (fitness2) — DARK MODE
+     ========================================= */
+  :root[data-preset="fitness2"][data-theme="dark"] {
+    color-scheme: dark;
+    --color-canvas: #1c1c22;
+    --color-sidebar: #25252c;
+    --color-panel: #25252c;
+    --color-foreground: #f4f4f7;
+    --color-muted: #a8a8b2;
+    --color-lime: #7057e8;
+    --primary: #7057e8;
+    --primary-dark: #5b42d1;
+    --color-ink: #ffffff;
+    --color-white: #ffffff;
+    --surface: #25252c;
+    --card: #25252c;
+    --line: #35353e;
+    --bg: #1c1c22;
+  }
+  :root[data-preset="fitness2"][data-theme="dark"] body { background: var(--bg); }
+
+  /* =========================================
+     THEME 2: PURPLE STEEL (fitness2) — LIGHT MODE
+     ========================================= */
+  :root[data-preset="fitness2"][data-theme="light"] {
+    color-scheme: light;
+    --color-canvas: #f6f7f9;
+    --color-sidebar: #ffffff;
+    --color-panel: #ffffff;
+    --color-foreground: #1b1b24;
+    --color-muted: #787985;
+    --color-lime: #7057e8;
+    --primary: #7057e8;
+    --primary-dark: #5b42d1;
+    --color-ink: #ffffff;
+    --color-white: #1b1b24;
+    --surface: #ffffff;
+    --card: #ffffff;
+    --line: #e7e7ec;
+    --bg: #f6f7f9;
+  }
+  :root[data-preset="fitness2"][data-theme="light"] body { background: var(--bg); }
+}
+
+@layer components {
+  /* =========================================
+     CARDS & LAYOUTS
+     ========================================= */
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: var(--card, var(--surface));
+    padding: 24px;
+    transition: background-color var(--transition-speed), border-color var(--transition-speed), box-shadow 0.2s ease;
+  }
+  :root[data-preset="fitness1"][data-theme="dark"] .card {
+    background: var(--card, #1b293b);
+    border-color: var(--line);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  }
+  :root[data-preset="fitness1"][data-theme="light"] .card {
+    background: #ffffff;
+    border-color: var(--line);
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+  }
+
+  /* Page Headers */
+  .page-header { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 28px; }
+  .page-header h1 { font-size: 30px; font-weight: 800; color: var(--color-white, white); margin: 0; }
+  .page-header p { color: var(--color-muted); font-size: 14px; margin-top: 8px; }
+  .page-actions { display: flex; gap: 10px; }
+  .eyebrow { color: var(--color-muted); font-size: 10px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; }
+
+  /* =========================================
+     INPUT FIELDS & FORMS
+     ========================================= */
+  .field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+
+  .search-input, 
+  .field-input, 
+  .field input, 
+  .field select, 
+  .field textarea {
+    width: 100%;
+    border: 1px solid var(--line) !important;
+    border-radius: 12px;
+    outline: none !important;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--color-foreground);
+    font-size: 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    font-family: inherit;
+    box-shadow: none;
+  }
+
+  /* Dropdown & Options High-Contrast Fix for Dark & Light modes */
+  select, 
+  .field select, 
+  select.field-input,
+  .select-compact {
+    cursor: pointer;
+    background-color: var(--surface) !important;
+    color: var(--color-foreground) !important;
+  }
+
+  select option,
+  .field select option,
+  select.field-input option,
+  .select-compact option {
+    background-color: #151f30 !important;
+    color: #f4f7fb !important;
+    padding: 10px 12px;
+  }
+
+  :root[data-theme="light"] select option,
+  :root[data-theme="light"] .field select option,
+  :root[data-theme="light"] select.field-input option,
+  :root[data-theme="light"] .select-compact option {
+    background-color: #ffffff !important;
+    color: #172335 !important;
+  }
+
+  :root[data-preset="fitness2"][data-theme="dark"] select option,
+  :root[data-preset="fitness2"][data-theme="dark"] .field select option,
+  :root[data-preset="fitness2"][data-theme="dark"] select.field-input option,
+  :root[data-preset="fitness2"][data-theme="dark"] .select-compact option {
+    background-color: #25252c !important;
+    color: #f4f4f7 !important;
+  }
+
+  :root[data-preset="fitness2"][data-theme="light"] select option,
+  :root[data-preset="fitness2"][data-theme="light"] .field select option,
+  :root[data-preset="fitness2"][data-theme="light"] select.field-input option,
+  :root[data-preset="fitness2"][data-theme="light"] .select-compact option {
+    background-color: #ffffff !important;
+    color: #1b1b24 !important;
+  }
+
+  :root[data-theme="light"] .search-input, 
+  :root[data-theme="light"] .field-input, 
+  :root[data-theme="light"] .field input, 
+  :root[data-theme="light"] .field select, 
+  :root[data-theme="light"] .field textarea {
+    background: #ffffff;
+    border: 1px solid var(--line) !important;
+    color: var(--color-foreground);
+  }
+
+  .search-input { height: 44px; padding: 0 48px 0 42px; }
+  .field-input { height: 48px; padding: 0 16px; }
+  .field select { height: 48px; padding: 0 16px; cursor: pointer; }
+  .field textarea { padding: 14px 16px; resize: vertical; min-height: 100px; }
+
+  /* Focus State (Emerald/Mint Glow) */
+  .search-input:focus, 
+  .field-input:focus, 
+  .field input:focus, 
+  .field select:focus, 
+  .field textarea:focus {
+    border-color: var(--color-lime) !important;
+    outline: none !important;
+    box-shadow: 0 0 0 1px var(--color-lime) !important; 
+  }
+
+  .search-input::placeholder, 
+  .field-input::placeholder, 
+  .field input::placeholder, 
+  .field textarea::placeholder {
+    color: var(--color-muted);
+    opacity: 0.7;
+  }
+
+  .field-label, 
+  .field > span {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--color-white, white);
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  /* =========================================
+     BUTTONS & NAVIGATION
+     ========================================= */
+  .nav-item {
+    display: flex; align-items: center; gap: 12px; border-radius: 12px; padding: 11px 12px;
+    color: var(--color-muted); font-size: 13px; font-weight: 700; text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .nav-item:hover { color: var(--color-white, white); background: rgba(255, 255, 255, 0.04); }
+  .nav-item-active { color: var(--color-white, white); background: color-mix(in srgb, var(--color-lime) 12%, transparent); }
+  
+  :root[data-theme="light"] .nav-item:hover, :root[data-preset="fitness2"] .nav-item:hover { background: rgba(20, 30, 40, 0.05); color: var(--color-foreground); }
+  :root[data-theme="light"] .nav-item-active, :root[data-preset="fitness2"] .nav-item-active { background: color-mix(in srgb, var(--color-lime) 15%, transparent); color: var(--color-lime); }
+
+  .btn-primary, .btn-secondary, .btn-glass, .btn-danger, .btn {
+    display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 8px; 
+    border-radius: 12px; padding: 0 20px; font-size: 13px; font-weight: 800; border: none;
+    transition: all 0.2s ease;
+  }
+  
+  /* Primary Button with high-contrast text */
+  .btn-primary { 
+    background: var(--color-lime); 
+    color: var(--color-ink, #071b16); 
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--color-lime) 20%, transparent); 
+  }
+  .btn-primary:hover { 
+    background: var(--primary-dark, #0bb886);
+    color: #ffffff;
+    transform: translateY(-1px); 
+    box-shadow: 0 10px 28px color-mix(in srgb, var(--color-lime) 30%, transparent);
+  }
+  
+  .btn-secondary { border: 1px solid var(--line); background: rgba(255, 255, 255, 0.04); color: var(--color-foreground); }
+  .btn-secondary:hover { border-color: color-mix(in srgb, var(--color-lime) 40%, transparent); color: var(--color-lime); }
+  .btn-glass { border: 1px solid rgba(255, 255, 255, 0.15); background: rgba(0, 0, 0, 0.3); color: white; backdrop-filter: blur(10px); }
+  .btn-danger { border: 1px solid rgba(239, 68, 68, 0.2); background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+
+  .icon-button, .icon-btn {
+    display: inline-grid; width: 40px; height: 40px; flex-shrink: 0; place-items: center;
+    border: 1px solid var(--line); border-radius: 12px; color: var(--color-muted); background: rgba(255, 255, 255, 0.03);
+    transition: all 0.2s ease;
+  }
+  .icon-button:hover { border-color: color-mix(in srgb, var(--color-lime) 35%, transparent); color: var(--color-lime); }
+
+  /* =========================================
+     MODALS & OVERLAYS
+     ========================================= */
+  .modal-wrap {
+    position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center;
+    background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(6px); padding: 20px;
+  }
+  .modal {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 20px;
+    width: 100%; max-width: 500px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    overflow: hidden; animation: modalIn 0.2s ease-out;
+  }
+  @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+  .modal-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 24px; border-bottom: 1px solid var(--line);
+  }
+  .modal-head h2 { font-size: 18px; font-weight: 700; color: var(--color-white, white); margin: 0; }
+  .modal-content { padding: 24px; }
+
+  /* =========================================
+     SPECIAL LAYOUTS (Settings, Stats, etc.)
+     ========================================= */
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .metric-card { display: flex; flex-direction: column; position: relative; }
+  .metric-label { font-size: 12px; color: var(--color-muted); font-weight: 500; }
+  .metric-value { font-size: 24px; font-weight: 800; color: var(--color-white, white); margin-top: 4px; }
+  .metric-value small { font-size: 13px; font-weight: 500; color: var(--color-muted); }
+  .metric-delta { position: absolute; top: 24px; right: 24px; font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 6px; background: rgba(255, 255, 255, 0.05); color: var(--color-muted); }
+  .metric-delta.good { color: #10b981; background: rgba(16, 185, 129, 0.1); }
+
+  .settings-layout { display: grid; grid-template-columns: 200px 1fr; gap: 24px; }
+  .settings-nav { display: flex; flex-direction: column; gap: 6px; }
+  .settings-nav button {
+    text-align: left; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600;
+    color: var(--color-muted); border: none; background: transparent; cursor: pointer;
+  }
+  .settings-nav button.active { background: color-mix(in srgb, var(--color-lime) 15%, transparent); color: var(--color-lime); }
+  .settings-content { display: flex; flex-direction: column; gap: 16px; }
+
+  /* Tabs & Theme Toggles */
+  .theme-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .theme-options button {
+    border: 1px solid var(--line); border-radius: 14px; padding: 16px; text-align: left;
+    background: rgba(255, 255, 255, 0.02); transition: all 0.2s ease; cursor: pointer;
+  }
+  .theme-options button.active { border-color: var(--color-lime); box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-lime) 20%, transparent); }
+  .theme-options span { width: 40px; height: 40px; border-radius: 12px; background: rgba(255, 255, 255, 0.06); display: grid; place-items: center; margin-bottom: 14px; }
+  .theme-options strong { display: block; font-size: 13px; font-weight: 700; color: var(--color-white, white); }
+  .theme-options small { display: block; font-size: 11px; color: var(--color-muted); margin-top: 4px; }
+}
+
+/* =========================================
+   RESPONSIVE DESIGN
+   ========================================= */
+@media (max-width: 1100px) {
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .settings-layout { grid-template-columns: 1fr; }
+}
+@media (max-width: 800px) {
+  .page-header { flex-direction: column; align-items: flex-start; }
+  .page-header h1 { font-size: 26px; }
+}
+@media (max-width: 560px) {
+  .stat-grid { grid-template-columns: 1fr; }
+  .theme-options { grid-template-columns: 1fr; }
+}
+
+/* Reveal Animation (Landing Page) */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =========================================
+   MOBILE SIDEBAR DRAWER FIX (Hide closed X button)
+   ========================================= */
+@media (max-width: 1023px) {
+  .sidebar-drawer:not(.is-open) {
+    transform: translateX(-100%) !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    opacity: 0 !important;
+  }
+  .sidebar-drawer.is-open {
+    transform: translateX(0) !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    opacity: 1 !important;
+  }
+  /* Tighten form fields on mobile to prevent excessive scrolling */
+  .field {
+    margin-bottom: 14px;
+  }
+}
+@media (min-width: 1024px) {
+  .sidebar-drawer {
+    transform: none !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    opacity: 1 !important;
+  }
+}

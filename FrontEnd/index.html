@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      try {
+        var path = window.location.pathname;
+        var isPublic = path === "/" || path === "/login" || path === "/register";
+        var mode = isPublic 
+          ? (localStorage.getItem("landing-theme") === "light" ? "light" : "dark")
+          : (localStorage.getItem("kinetic-theme") === "light" ? "light" : "dark");
+        var preset = isPublic 
+          ? "fitness1" 
+          : (localStorage.getItem("forma-preset") === "fitness2" ? "fitness2" : "fitness1");
+        var el = document.documentElement;
+        el.dataset.theme = mode;
+        el.dataset.preset = preset;
+        el.classList.toggle("dark", preset === "fitness2" && mode === "dark");
+      } catch (e) {}
+    </script>
+    <title>FITNESSTRACKER</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

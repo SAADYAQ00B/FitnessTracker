@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Environment Variables & Secrets (Anti-Data Leak)
+.env
+.env.*
+!.env.example
+*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# System & IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
