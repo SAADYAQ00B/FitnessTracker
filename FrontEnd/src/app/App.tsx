@@ -3,6 +3,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { router } from "./routes";
 import { ThemeProvider } from "../context/ThemeContext";
 import { AppProvider } from "../context/AppContext";
+import GlobalLoader from "../components/common/GlobalLoader";
 
 export default function App() {
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
@@ -11,6 +12,7 @@ export default function App() {
     <GoogleOAuthProvider clientId={googleClientId}>
       <ThemeProvider>
         <AppProvider>
+          <GlobalLoader />
           <RouterProvider router={router} />
         </AppProvider>
       </ThemeProvider>

@@ -412,15 +412,29 @@ export function AuthPage({ register = false }: { register?: boolean }) {
 
               {/* Google OAuth Button */}
               <div className="w-full flex justify-center">
-                <GoogleLogin
-                  onSuccess={handleGoogleSuccess}
-                  onError={handleGoogleError}
-                  theme="filled_black"
-                  shape="pill"
-                  size="large"
-                  text={register ? "signup_with" : "signin_with"}
-                  width="340"
-                />
+                <div 
+                  className="google-btn-wrapper"
+                  style={{
+                    borderRadius: "9999px",
+                    overflow: "hidden",
+                    background: "transparent",
+                    colorScheme: "dark",
+                    display: "inline-flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    maxWidth: "100%",
+                  }}
+                >
+                  <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={handleGoogleError}
+                    theme="filled_black"
+                    shape="pill"
+                    size="large"
+                    text={register ? "signup_with" : "signin_with"}
+                    width="340"
+                  />
+                </div>
               </div>
               
               <p className="text-center text-[11px] text-muted mt-3 sm:mt-5">

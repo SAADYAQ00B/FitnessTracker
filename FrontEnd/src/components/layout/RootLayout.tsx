@@ -1,12 +1,19 @@
 import { useState, useEffect } from "react";
-import { Outlet, useLocation } from "react-router";
+import { Outlet, useLocation, Navigate } from "react-router";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { useApp } from "../../context/AppContext";
 import { useTheme } from "../../context/ThemeContext";
 import { CheckCircle2 } from "lucide-react";
+import { isAuthenticated, clearAuthSession } from "../../app/authGuard";
 
 export function RootLayout() {
+  // Synchronous guard before rendering any layout markup
+  if (!isAuthenticated()) {
+    clearAuthSession();
+    return <Navigate to="/login" replace />;
+  }
+
   const [mobileOpen, setMobileOpen] = useState(false);
   const { toasts } = useApp();
   const location = useLocation();

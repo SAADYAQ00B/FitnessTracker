@@ -35,6 +35,10 @@
     background: var(--bg);
     color: var(--color-foreground);
     transition: background-color var(--transition-speed), color var(--transition-speed);
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
   }
 
   /* =========================================
@@ -424,4 +428,26 @@
     pointer-events: auto !important;
     opacity: 1 !important;
   }
+}
+
+/* =========================================
+   GOOGLE SIGN-IN BUTTON WRAPPER FIX
+   ========================================= */
+.google-btn-wrapper,
+.google-btn-wrapper > div,
+.google-btn-wrapper iframe {
+  border-radius: 9999px !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  color-scheme: dark !important;
+}
+
+/* =========================================
+   CAPACITOR MOBILE SAFE AREAS
+   ========================================= */
+:root {
+  --safe-area-inset-top: env(safe-area-inset-top, 0px);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-inset-left: env(safe-area-inset-left, 0px);
+  --safe-area-inset-right: env(safe-area-inset-right, 0px);
 }

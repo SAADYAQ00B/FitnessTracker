@@ -159,6 +159,21 @@ async function runTests() {
   );
   console.log("✓ forgotPassword validation (missing email -> 400):", forgotStatus === 400 ? "PASSED" : "FAILED");
 
+  // Support ticket missing topic/message
+  const { createTicket } = await import('./controllers/supportController.mjs');
+  let supportStatus = 0;
+  let supportData = null;
+  await createTicket(
+    { body: {} },
+    {
+      status: (code) => {
+        supportStatus = code;
+        return { json: (d) => { supportData = d; } };
+      }
+    }
+  );
+  console.log("✓ createTicket validation (missing fields -> 400):", supportStatus === 400 ? "PASSED" : "FAILED");
+
   // 6. Security Hardening Middleware Checks
   const helmetModule = await import('helmet');
   console.log("✓ Helmet security middleware:", typeof helmetModule.default === 'function' ? "PASSED" : "FAILED");

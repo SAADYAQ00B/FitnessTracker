@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router";
-import { ArrowRight, Dumbbell, Apple, LineChart, PieChart, CheckCircle2, UserPlus, ListChecks, Trophy, Menu, X, Mail, Globe, Sun, Moon, Sparkles } from "lucide-react";
+import { ArrowRight, Dumbbell, Apple, LineChart, PieChart, CheckCircle2, UserPlus, ListChecks, Trophy, Menu, X, Mail, Globe, Sun, Moon, Sparkles, Smartphone, Download } from "lucide-react";
 import { Logo } from "../components/common/Logo";
 
 export function LandingPage() {
@@ -95,6 +95,19 @@ export function LandingPage() {
           <Link to="/login" className="font-bold hover:text-[var(--color-lime)] transition-colors px-2 py-1">
             Login
           </Link>
+          <a
+            href="/FITNESSTRACKER.apk"
+            download="FITNESSTRACKER.apk"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all hover:scale-105"
+            style={{
+              background: "rgba(22, 217, 160, 0.08)",
+              borderColor: "rgba(22, 217, 160, 0.3)",
+              color: "var(--color-lime)"
+            }}
+            title="Download Android APK"
+          >
+            <Smartphone size={15} /> Download App
+          </a>
           <Link to="/register" className="btn-primary">
             Sign Up
           </Link>
@@ -130,6 +143,19 @@ export function LandingPage() {
           <a href="#contact" className="text-sm font-semibold" onClick={() => setMobileOpen(false)}>Contact</a>
           <div className="flex flex-col gap-3 mt-4 pt-4 border-t" style={{ borderColor: "var(--line)" }}>
             <Link to="/login" className="font-bold text-center py-2" onClick={() => setMobileOpen(false)}>Login</Link>
+            <a
+              href="/FITNESSTRACKER.apk"
+              download="FITNESSTRACKER.apk"
+              className="inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-bold border text-center transition-all"
+              style={{
+                background: "rgba(22, 217, 160, 0.08)",
+                borderColor: "rgba(22, 217, 160, 0.3)",
+                color: "var(--color-lime)"
+              }}
+              onClick={() => setMobileOpen(false)}
+            >
+              <Smartphone size={16} /> Download App (.apk)
+            </a>
             <Link to="/register" className="btn-primary text-center" onClick={() => setMobileOpen(false)}>Sign Up</Link>
           </div>
         </div>
@@ -161,6 +187,19 @@ export function LandingPage() {
             <Link to="/register" className="btn-primary flex items-center gap-2">
               Start Free Today <ArrowRight size={16} />
             </Link>
+            <a
+              href="/FITNESSTRACKER.apk"
+              download="FITNESSTRACKER.apk"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-bold text-sm border transition-all hover:scale-105"
+              style={{
+                background: "rgba(22, 217, 160, 0.08)",
+                borderColor: "rgba(22, 217, 160, 0.35)",
+                color: "var(--color-lime)"
+              }}
+              title="Download FITNESSTRACKER Android APK"
+            >
+              <Smartphone size={17} /> Download App (.apk)
+            </a>
             <a href="#features" className="btn-secondary">
               Explore Platform
             </a>
@@ -425,16 +464,25 @@ export function LandingPage() {
           <p className="text-sm text-emerald-100 max-w-xl mx-auto mb-8 leading-relaxed">
             Join FITNESSTRACKER today. Track every set, monitor your macros, and build the physical momentum you have always wanted.
           </p>
-          <Link 
-            to="/register" 
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-extrabold text-sm transition-all shadow-xl hover:scale-105"
-            style={{ 
-              background: "#ffffff", 
-              color: "#08a978" 
-            }}
-          >
-            Create Your Free Account <ArrowRight size={18} />
-          </Link>
+          <div className="flex flex-wrap justify-center items-center gap-4">
+            <Link 
+              to="/register" 
+              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-extrabold text-sm transition-all shadow-xl hover:scale-105"
+              style={{ 
+                background: "#ffffff", 
+                color: "#08a978" 
+              }}
+            >
+              Create Your Free Account <ArrowRight size={18} />
+            </Link>
+            <a
+              href="/FITNESSTRACKER.apk"
+              download="FITNESSTRACKER.apk"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-extrabold text-sm transition-all border border-white/40 text-white bg-black/20 hover:bg-black/30 backdrop-blur-sm hover:scale-105"
+            >
+              <Smartphone size={18} /> Download App (.apk)
+            </a>
+          </div>
         </div>
       </section>
 
@@ -478,10 +526,10 @@ export function LandingPage() {
             <h3 className="font-bold mb-4" style={{ color: "var(--color-white, white)" }}>Contact Us</h3>
             <ul className="space-y-2 text-sm font-medium">
               <li className="flex items-center gap-2">
-                <Mail size={16} style={{ color: "var(--color-lime)" }} /> support@fitnesstracker.com
+                <Mail size={16} style={{ color: "var(--color-lime)" }} />fitnesstrackeryou.netlify.app/dashboard/support
               </li>
               <li className="flex items-center gap-2">
-                <Globe size={16} style={{ color: "var(--color-lime)" }} /> www.fitnesstracker.com
+                <Globe size={16} style={{ color: "var(--color-lime)" }} /> fitnesstrackeryou.netlify.app
               </li>
             </ul>
           </div>

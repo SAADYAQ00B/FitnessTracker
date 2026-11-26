@@ -10,6 +10,9 @@
     "format": "oxfmt"
   },
   "dependencies": {
+    "@capacitor/android": "^8.6.3",
+    "@capacitor/cli": "^7.6.11",
+    "@capacitor/core": "^8.6.3",
     "@react-oauth/google": "^0.13.5",
     "axios": "^1.21.1",
     "lucide-react": "^1.74.0",
