@@ -73,3 +73,37 @@ export function isAuthenticated(): boolean {
     return false;
   }
 }
+
+/**
+ * Synchronously checks if the currently logged-in user is an administrator.
+ */
+export function isAdmin(): boolean {
+  if (!isAuthenticated()) return false;
+  try {
+    const userStr = localStorage.getItem("user");
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      if (user.role === "admin") return true;
+    }
+
+    const token = localStorage.getItem("token");
+    if (token) {
+      const parts = token.split(".");
+      if (parts.length === 3) {
+        const base64Url = parts[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split("")
+            .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+            .join("")
+        );
+        const payload = JSON.parse(jsonPayload);
+        if (payload.role === "admin") return true;
+      }
+    }
+    return false;
+  } catch {
+    return false;
+  }
+}

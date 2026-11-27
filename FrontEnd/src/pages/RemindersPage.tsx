@@ -1,5 +1,5 @@
 import { useState, useEffect, FormEvent } from "react";
-import { Plus, Apple, Target, Dumbbell, Trash2, Bell, Check } from "lucide-react";
+import { Plus, Apple, Target, Dumbbell, Trash2, Bell, Check, AlarmClock } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { PageHeader } from "../components/common/PageHeader";
 import { Card } from "../components/common/Card";
@@ -12,18 +12,25 @@ import {
   deleteReminder,
   ReminderItem,
 } from "../services/reminderService";
+import {
+  scheduleReminderNotification,
+  cancelReminderNotification,
+  syncAllReminders,
+} from "../services/mobileNotificationService";
 
 export function RemindersPage() {
   const { notify } = useApp();
   const [items, setItems] = useState<ReminderItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isAlarm, setIsAlarm] = useState(false);
 
   const fetchReminders = async () => {
     setLoading(true);
     try {
       const data = await getReminders();
       setItems(data);
+      syncAllReminders(data);
     } catch (err) {
       console.error("Failed to load reminders", err);
     } finally {
@@ -43,12 +50,15 @@ export function RemindersPage() {
       schedule: formData.get("schedule") as string,
       type: (formData.get("type") as any) || "workout",
       active: true,
+      isAlarm,
     };
 
     try {
       const created = await addReminder(newReminder);
       setItems([created, ...items]);
+      scheduleReminderNotification(created);
       setIsAddOpen(false);
+      setIsAlarm(false);
       notify("Reminder scheduled successfully!");
     } catch (err: any) {
       notify(err.response?.data?.msg || "Failed to add reminder");
@@ -60,6 +70,14 @@ export function RemindersPage() {
       const nextActive = !currentActive;
       setItems(items.map((x) => ((x.id === id || x._id === id) ? { ...x, active: nextActive } : x)));
       await toggleReminder(id, nextActive);
+      const target = items.find((x) => x.id === id || x._id === id);
+      if (nextActive) {
+        if (target) {
+          scheduleReminderNotification({ ...target, active: true });
+        }
+      } else {
+        cancelReminderNotification(id);
+      }
       notify(nextActive ? "Reminder enabled" : "Reminder paused");
     } catch (err: any) {
       // Revert if error
@@ -71,6 +89,7 @@ export function RemindersPage() {
   const handleDelete = async (id: string) => {
     try {
       await deleteReminder(id);
+      cancelReminderNotification(id);
       setItems(items.filter((x) => x.id !== id && x._id !== id));
       notify("Reminder removed");
     } catch (err: any) {
@@ -86,7 +105,7 @@ export function RemindersPage() {
         eyebrow="STAY CONSISTENT" 
         title="Reminders & Alerts" 
         description="Build lifelong habits with timely nudges for workouts, meal times, and fitness milestones." 
-        action={<Button icon={Plus} onClick={() => setIsAddOpen(true)}>New reminder</Button>} 
+        action={<Button icon={Plus} onClick={() => { setIsAlarm(false); setIsAddOpen(true); }}>New reminder</Button>} 
       />
       
       <div className="grid lg:grid-cols-[1.5fr_.8fr] gap-5">
@@ -119,9 +138,16 @@ export function RemindersPage() {
                       {r.type === "meal" ? <Apple size={18} /> : r.type === "goal" ? <Target size={18} /> : <Dumbbell size={18} />}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <strong className="block text-sm truncate" style={{ color: "var(--color-white, white)" }}>
-                        {r.title}
-                      </strong>
+                      <div className="flex items-center gap-2">
+                        <strong className="block text-sm truncate" style={{ color: "var(--color-white, white)" }}>
+                          {r.title}
+                        </strong>
+                        {r.isAlarm && (
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-500/15 text-red-400 border border-red-500/20 inline-flex items-center gap-1 shrink-0">
+                            <AlarmClock size={10} /> ALARM
+                          </span>
+                        )}
+                      </div>
                       <span className="text-xs text-muted truncate block">{r.schedule}</span>
                     </div>
 
@@ -201,6 +227,34 @@ export function RemindersPage() {
                 <option value="general">General Habit</option>
               </select>
             </label>
+
+            {/* Optional Alarm Alert Toggle Switch */}
+            <div className="flex items-center justify-between p-3 rounded-xl border border-[var(--line)] bg-white/5">
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <AlarmClock size={15} className={isAlarm ? "text-red-400" : "text-muted"} />
+                  <strong className="block text-xs font-semibold" style={{ color: "var(--color-white, white)" }}>
+                    Alarm Alert (Optional)
+                  </strong>
+                </div>
+                <span className="text-[11px] text-muted block mt-0.5">
+                  {isAlarm
+                    ? "High-priority alarm sound & vibration (Alarm Mode)"
+                    : "Standard WhatsApp-style banner notification (Default)"}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsAlarm(!isAlarm)}
+                className={`w-10 h-6 rounded-full p-1 transition cursor-pointer shrink-0 ${
+                  isAlarm ? "bg-red-500" : "bg-white/10"
+                }`}
+                title={isAlarm ? "Alarm mode active" : "Standard notification mode"}
+              >
+                <div className={`size-4 bg-white rounded-full transition ${isAlarm ? "translate-x-4" : ""}`} />
+              </button>
+            </div>
+
             <Button type="submit" className="w-full mt-2">Save Reminder</Button>
           </form>
         </Modal>

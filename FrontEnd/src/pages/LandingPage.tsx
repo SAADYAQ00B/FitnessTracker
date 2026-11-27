@@ -95,6 +95,9 @@ export function LandingPage() {
           <Link to="/login" className="font-bold hover:text-[var(--color-lime)] transition-colors px-2 py-1">
             Login
           </Link>
+           <Link to="/register" className="btn-primary">
+            Sign Up
+          </Link>
           <a
             href="/FITNESSTRACKER.apk"
             download="FITNESSTRACKER.apk"
@@ -104,13 +107,11 @@ export function LandingPage() {
               borderColor: "rgba(22, 217, 160, 0.3)",
               color: "var(--color-lime)"
             }}
-            title="Download Android APK"
+            title="Download App"
           >
             <Smartphone size={15} /> Download App
           </a>
-          <Link to="/register" className="btn-primary">
-            Sign Up
-          </Link>
+         
         </div>
 
         {/* Mobile menu button */}
@@ -154,7 +155,7 @@ export function LandingPage() {
               }}
               onClick={() => setMobileOpen(false)}
             >
-              <Smartphone size={16} /> Download App (.apk)
+              <Smartphone size={16} /> Download App
             </a>
             <Link to="/register" className="btn-primary text-center" onClick={() => setMobileOpen(false)}>Sign Up</Link>
           </div>
@@ -200,9 +201,9 @@ export function LandingPage() {
             >
               <Smartphone size={17} /> Download App (.apk)
             </a>
-            <a href="#features" className="btn-secondary">
+            {/* <a href="#features" className="btn-secondary">
               Explore Platform
-            </a>
+            </a> */}
           </div>
 
           {/* Quick Metrics Bar */}

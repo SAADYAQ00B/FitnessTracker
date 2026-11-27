@@ -154,10 +154,16 @@ export const VerifySignupOTP = async (req, res) => {
     user.isVerified = true;
     user.otpCode = undefined;
     user.otpExpires = undefined;
+
+    const adminEmail = (process.env.EMAIL_USER || process.env.SMTP_USER || '').toLowerCase().trim();
+    if (adminEmail && user.email.toLowerCase() === adminEmail) {
+      user.role = 'admin';
+    }
+
     await user.save();
 
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      { id: user._id, email: user.email, role: user.role || 'user' },
       JWT_SECRET,
       { expiresIn: "7d" }
     );
@@ -273,8 +279,14 @@ export const Login = async (req, res) => {
       });
     }
 
+    const adminEmail = (process.env.EMAIL_USER || process.env.SMTP_USER || '').toLowerCase().trim();
+    if (adminEmail && checkUser.email.toLowerCase() === adminEmail && checkUser.role !== 'admin') {
+      checkUser.role = 'admin';
+      await checkUser.save();
+    }
+
     const token = jwt.sign(
-      { id: checkUser._id, email: checkUser.email },
+      { id: checkUser._id, email: checkUser.email, role: checkUser.role || 'user' },
       JWT_SECRET,
       { expiresIn: "7d" }
     );
@@ -327,12 +339,18 @@ export const googleAuth = async (req, res) => {
     // Find existing user by email or auto-provision
     let user = await User.findOne({ email });
 
+    const adminEmail = (process.env.EMAIL_USER || process.env.SMTP_USER || '').toLowerCase().trim();
+    const isAdmin = Boolean(adminEmail && email.toLowerCase() === adminEmail);
+
     if (user) {
       if (!user.isVerified) {
         user.isVerified = true;
       }
       if (!user.avatar && picture) {
         user.avatar = picture;
+      }
+      if (isAdmin && user.role !== 'admin') {
+        user.role = 'admin';
       }
       await user.save();
     } else {
@@ -345,12 +363,13 @@ export const googleAuth = async (req, res) => {
         themePreset: "fitness1",
         themeMode: "dark",
         isVerified: true,
+        role: isAdmin ? 'admin' : 'user',
       });
       await user.save();
     }
 
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      { id: user._id, email: user.email, role: user.role || 'user' },
       JWT_SECRET,
       { expiresIn: "7d" }
     );
@@ -457,6 +476,11 @@ export const getProfile = async (req, res) => {
     const user = await User.findById(req.user.id).select("-password");
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
+    }
+    const adminEmail = (process.env.EMAIL_USER || process.env.SMTP_USER || '').toLowerCase().trim();
+    if (adminEmail && user.email.toLowerCase() === adminEmail && user.role !== 'admin') {
+      user.role = 'admin';
+      await user.save();
     }
     res.status(200).json(user);
   } catch (error) {

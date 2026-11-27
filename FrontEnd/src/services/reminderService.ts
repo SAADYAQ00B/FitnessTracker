@@ -7,6 +7,7 @@ export interface ReminderItem {
   schedule: string;
   type: 'workout' | 'meal' | 'goal' | 'general';
   active: boolean;
+  isAlarm?: boolean;
 }
 
 export const getReminders = async (): Promise<ReminderItem[]> => {

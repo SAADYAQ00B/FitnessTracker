@@ -16,6 +16,7 @@ import {
   WorkoutSessionItem,
   ExerciseItem,
 } from "../services/workoutService";
+import { triggerMilestoneNotification } from "../services/mobileNotificationService";
 
 export const CATEGORY_IMAGES: Record<string, string> = {
   Strength: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&q=80",
@@ -184,6 +185,7 @@ export function WorkoutsPage() {
     try {
       const res = await completeWorkout(routineId);
       notify("Workout completed! +50 XP recorded.");
+      triggerMilestoneNotification("🏆 Milestone Achieved! You hit a new personal best on FITNESSTRACKER!");
       if (res.session) {
         const d = new Date(res.session.date);
         const timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });

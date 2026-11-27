@@ -17,6 +17,7 @@ import analyticsRouter from './routes/analyticsRouter.mjs';
 import reminderRouter from './routes/reminderRouter.mjs';
 import supportRouter from './routes/supportRouter.mjs';
 import reportRouter from './routes/reportRouter.mjs';
+import adminRouter from './routes/adminRouter.mjs';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -132,6 +133,7 @@ app.use('/api/analytics', analyticsRouter);
 app.use('/api/reminders', reminderRouter);
 app.use('/api/support', supportRouter);
 app.use('/api/reports', reportRouter);
+app.use('/api/admin', adminRouter);
 
 // Global Error Handler
 app.use((err, req, res, next) => {

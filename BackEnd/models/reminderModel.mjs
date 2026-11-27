@@ -28,6 +28,10 @@ const reminderSchema = new Schema({
     type: Boolean,
     default: true,
   },
+  isAlarm: {
+    type: Boolean,
+    default: false,
+  },
 }, { timestamps: true });
 
 const Reminder = mongoose.model("Reminder", reminderSchema);

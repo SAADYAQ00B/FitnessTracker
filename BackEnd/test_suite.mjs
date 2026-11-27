@@ -96,6 +96,8 @@ async function runTests() {
 
   // 4. User model verification fields
   console.log("✓ User model isVerified default:", user.isVerified === false ? "PASSED (false)" : "FAILED");
+  console.log("✓ User model role default:", user.role === "user" ? "PASSED (user)" : "FAILED");
+  console.log("✓ Reminder model isAlarm default:", reminder.isAlarm === false ? "PASSED (false)" : "FAILED");
   user.otpCode = "123456";
   user.otpExpires = new Date(Date.now() + 10 * 60 * 1000);
   console.log("✓ User model OTP fields assigned:", user.otpCode === "123456" && user.otpExpires instanceof Date ? "PASSED" : "FAILED");
@@ -183,6 +185,27 @@ async function runTests() {
 
   const { generalApiLimiter, authRateLimiter } = await import('./middleware/security.mjs');
   console.log("✓ Rate limiting middleware (General & Auth/OTP):", typeof generalApiLimiter === 'function' && typeof authRateLimiter === 'function' ? "PASSED" : "FAILED");
+
+  // 7. Admin Middleware & Controller Check
+  const { verifyAdmin } = await import('./middleware/auth.mjs');
+  let adminForbidden = false;
+  let adminAllowed = false;
+  await verifyAdmin(
+    { user: { id: fakeUserId.toString(), role: 'user' } },
+    {
+      status: (code) => {
+        if (code === 403) adminForbidden = true;
+        return { json: () => {} };
+      }
+    },
+    () => {}
+  );
+  await verifyAdmin(
+    { user: { id: fakeUserId.toString(), role: 'admin' } },
+    {},
+    () => { adminAllowed = true; }
+  );
+  console.log("✓ Admin Middleware (verifyAdmin 403 on user / pass on admin):", adminForbidden && adminAllowed ? "PASSED" : "FAILED");
 
   console.log("=== ALL TEST SUITE CHECKS COMPLETED SUCCESSFULLY ===");
 }

@@ -28,6 +28,7 @@ const userSchema = new Schema({
   resetPasswordToken: { type: String },
   resetPasswordExpires: { type: Date },
   isVerified: { type: Boolean, default: false },
+  role: { type: String, enum: ['user', 'admin'], default: 'user' },
   otpCode: { type: String },
   otpExpires: { type: Date },
   isActive: { type: Boolean, default: true },

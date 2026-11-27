@@ -1,4 +1,5 @@
 import { createBrowserRouter, Navigate, Outlet } from "react-router";
+import { Capacitor } from "@capacitor/core";
 import { RootLayout } from "../components/layout/RootLayout";
 import { OverviewPage } from "../pages/OverviewPage";
 import { WorkoutsPage } from "../pages/WorkoutsPage";
@@ -9,10 +10,24 @@ import { RemindersPage } from "../pages/RemindersPage";
 import { ProfilePage } from "../pages/ProfilePage";
 import { SettingsPage } from "../pages/SettingsPage";
 import { HelpCenterPage } from "../pages/HelpCenterPage";
+import { AdminPage } from "../pages/AdminPage";
 import { AuthPage } from "../pages/AuthPage";
 import { NotFoundPage } from "../pages/NotFoundPage";
 import { LandingPage } from "../pages/LandingPage";
-import { isAuthenticated, clearAuthSession } from "./authGuard";
+import { isAuthenticated, isAdmin, clearAuthSession } from "./authGuard";
+
+/**
+ * RootRoute component:
+ * When running inside native mobile app (Capacitor.isNativePlatform() === true),
+ * skips the marketing landing page and routes directly to /dashboard or /login.
+ * In a normal web browser, renders the full marketing LandingPage.
+ */
+function RootRoute() {
+  if (Capacitor.isNativePlatform()) {
+    return isAuthenticated() ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />;
+  }
+  return <LandingPage />;
+}
 
 /**
  * Strict synchronous ProtectedRoute guard.
@@ -23,6 +38,22 @@ export function ProtectedRoute({ children }: { children?: React.ReactNode }) {
   if (!isAuthenticated()) {
     clearAuthSession();
     return <Navigate to="/login" replace />;
+  }
+  return children ? <>{children}</> : <Outlet />;
+}
+
+/**
+ * Strict synchronous AdminRoute guard.
+ * Requires valid authenticated session AND admin role.
+ * If not authenticated, redirects to /login. If not admin, redirects to /dashboard.
+ */
+export function AdminRoute({ children }: { children?: React.ReactNode }) {
+  if (!isAuthenticated()) {
+    clearAuthSession();
+    return <Navigate to="/login" replace />;
+  }
+  if (!isAdmin()) {
+    return <Navigate to="/dashboard" replace />;
   }
   return children ? <>{children}</> : <Outlet />;
 }
@@ -39,8 +70,8 @@ export function PublicOnlyRoute({ children }: { children: React.ReactNode }) {
 }
 
 export const router = createBrowserRouter([
-  // Public Routes
-  { path: "/", Component: LandingPage },
+  // Public Routes (skips landing in native mobile app)
+  { path: "/", Component: RootRoute },
   {
     path: "/login",
     Component: () => (
@@ -56,6 +87,19 @@ export const router = createBrowserRouter([
         <AuthPage register />
       </PublicOnlyRoute>
     ),
+  },
+
+  // Dedicated /admin Route (Protected by AdminRoute)
+  {
+    path: "/admin",
+    Component: () => (
+      <AdminRoute>
+        <RootLayout />
+      </AdminRoute>
+    ),
+    children: [
+      { index: true, Component: AdminPage },
+    ],
   },
 
   // Protected Dashboard Routes
@@ -76,6 +120,14 @@ export const router = createBrowserRouter([
       { path: "profile", Component: ProfilePage },
       { path: "settings", Component: SettingsPage },
       { path: "support", Component: HelpCenterPage },
+      {
+        path: "admin",
+        Component: () => (
+          <AdminRoute>
+            <AdminPage />
+          </AdminRoute>
+        ),
+      },
       { path: "*", Component: NotFoundPage },
     ],
   },

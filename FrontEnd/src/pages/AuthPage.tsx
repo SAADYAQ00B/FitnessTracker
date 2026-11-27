@@ -1,5 +1,6 @@
 import { useState, useEffect, FormEvent } from "react";
 import { Link, useNavigate } from "react-router";
+import { Capacitor } from "@capacitor/core";
 import { Sparkles, ArrowRight, ArrowLeft, KeyRound, Mail, CheckCircle2 } from "lucide-react";
 import { GoogleLogin } from "@react-oauth/google";
 import { Logo } from "../components/common/Logo";
@@ -17,6 +18,7 @@ import {
 
 export function AuthPage({ register = false }: { register?: boolean }) {
   const navigate = useNavigate();
+  const isNative = Capacitor.isNativePlatform();
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -234,13 +236,15 @@ export function AuthPage({ register = false }: { register?: boolean }) {
       {/* RIGHT SIDE: Form */}
       <div className="min-h-dvh lg:min-h-0 flex flex-col justify-center items-center py-4 px-5 sm:p-6">
         <div className="w-full max-w-sm flex flex-col justify-center my-auto">
-          {/* Back to Home Link */}
-          <Link 
-            to="/" 
-            className="inline-flex items-center gap-2 text-xs font-bold text-muted hover:text-[var(--color-lime)] mb-2 sm:mb-4 transition cursor-pointer"
-          >
-            <ArrowLeft size={16} /> Back to Home
-          </Link>
+          {/* Back to Home Link (Hidden inside mobile app) */}
+          {!isNative && (
+            <Link 
+              to="/" 
+              className="inline-flex items-center gap-2 text-xs font-bold text-muted hover:text-[var(--color-lime)] mb-2 sm:mb-4 transition cursor-pointer"
+            >
+              <ArrowLeft size={16} /> Back to Home
+            </Link>
+          )}
 
           {isVerifyingEmail ? (
             <div>
@@ -444,6 +448,20 @@ export function AuthPage({ register = false }: { register?: boolean }) {
                 </Link>
               </p>
             </form>
+          )}
+
+          {/* External Website Link for Mobile App */}
+          {isNative && (
+            <div className="text-center mt-4 pt-3 border-t border-[var(--line)]">
+              <a
+                href="https://fitnesstracker-app.netlify.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted hover:text-[var(--color-lime)] transition-colors cursor-pointer"
+              >
+                Visit Official Website →
+              </a>
+            </div>
           )}
         </div>
       </div>

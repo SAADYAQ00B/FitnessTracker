@@ -12,6 +12,7 @@ export const getReminders = async (req, res) => {
       schedule: r.schedule,
       type: r.type,
       active: r.active,
+      isAlarm: Boolean(r.isAlarm),
       createdAt: r.createdAt,
     }));
 
@@ -25,7 +26,7 @@ export const getReminders = async (req, res) => {
 // POST /api/reminders - Create a new reminder
 export const createReminder = async (req, res) => {
   try {
-    const { title, schedule, type, active } = req.body;
+    const { title, schedule, type, active, isAlarm } = req.body;
 
     if (!title || !schedule) {
       return res.status(400).json({ msg: "Title and schedule are required" });
@@ -37,6 +38,7 @@ export const createReminder = async (req, res) => {
       schedule,
       type: type || "workout",
       active: active !== undefined ? active : true,
+      isAlarm: Boolean(isAlarm),
     });
 
     const saved = await newReminder.save();
@@ -47,6 +49,7 @@ export const createReminder = async (req, res) => {
       schedule: saved.schedule,
       type: saved.type,
       active: saved.active,
+      isAlarm: Boolean(saved.isAlarm),
     });
   } catch (error) {
     console.error("createReminder error:", error);
@@ -76,6 +79,7 @@ export const toggleReminder = async (req, res) => {
       schedule: saved.schedule,
       type: saved.type,
       active: saved.active,
+      isAlarm: Boolean(saved.isAlarm),
     });
   } catch (error) {
     console.error("toggleReminder error:", error);
@@ -86,7 +90,7 @@ export const toggleReminder = async (req, res) => {
 // PUT /api/reminders/:id - Update reminder
 export const updateReminder = async (req, res) => {
   try {
-    const { title, schedule, type, active } = req.body;
+    const { title, schedule, type, active, isAlarm } = req.body;
     const reminder = await Reminder.findOne({ _id: req.params.id, user: req.user.id });
     if (!reminder) {
       return res.status(404).json({ msg: "Reminder not found" });
@@ -96,6 +100,7 @@ export const updateReminder = async (req, res) => {
     if (schedule) reminder.schedule = schedule;
     if (type) reminder.type = type;
     if (active !== undefined) reminder.active = active;
+    if (isAlarm !== undefined) reminder.isAlarm = Boolean(isAlarm);
 
     const saved = await reminder.save();
     res.status(200).json({
@@ -105,6 +110,7 @@ export const updateReminder = async (req, res) => {
       schedule: saved.schedule,
       type: saved.type,
       active: saved.active,
+      isAlarm: Boolean(saved.isAlarm),
     });
   } catch (error) {
     console.error("updateReminder error:", error);

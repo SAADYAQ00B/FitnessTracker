@@ -8,6 +8,16 @@ import { Card } from "../components/common/Card";
 import { Button } from "../components/common/Button";
 import { Modal } from "../components/common/Modal";
 import { getUser, updateUser, exportUserData, deleteAccount } from "../services/userService";
+import { getReminders } from "../services/reminderService";
+import {
+  getNotificationPrefs,
+  setNotificationPrefs,
+  syncAllReminders,
+  cancelAllReminderNotifications,
+  scheduleWeeklyReportNotification,
+  cancelWeeklyReportNotification,
+  NotificationPrefs,
+} from "../services/mobileNotificationService";
 
 export function SettingsPage() {
   const { notify } = useApp();
@@ -15,7 +25,13 @@ export function SettingsPage() {
   const { preset, setPreset, mode, toggleMode } = useTheme();
   const [activeSection, setActiveSection] = useState(0);
   const [units, setUnits] = useState<"Metric" | "Imperial">("Metric");
-  const [prefs, setPrefs] = useState([true, true, false, true]);
+  const initialLocalPrefs = getNotificationPrefs();
+  const [prefs, setPrefs] = useState([
+    initialLocalPrefs.workoutReminders,
+    initialLocalPrefs.goalAchievements,
+    initialLocalPrefs.weeklyReport,
+    initialLocalPrefs.communityUpdates,
+  ]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -33,11 +49,18 @@ export function SettingsPage() {
             setPreset(user.themePreset as ThemePreset);
           }
           if (user.notificationPrefs) {
+            const merged: NotificationPrefs = {
+              workoutReminders: user.notificationPrefs.workoutReminders ?? true,
+              goalAchievements: user.notificationPrefs.goalAchievements ?? true,
+              weeklyReport: user.notificationPrefs.weeklyReport ?? false,
+              communityUpdates: user.notificationPrefs.communityUpdates ?? true,
+            };
+            setNotificationPrefs(merged);
             setPrefs([
-              user.notificationPrefs.workoutReminders ?? true,
-              user.notificationPrefs.goalAchievements ?? true,
-              user.notificationPrefs.weeklyReport ?? false,
-              user.notificationPrefs.communityUpdates ?? true,
+              merged.workoutReminders,
+              merged.goalAchievements,
+              merged.weeklyReport,
+              merged.communityUpdates,
             ]);
           }
         }
@@ -45,9 +68,61 @@ export function SettingsPage() {
       .catch((err) => console.error("Failed to fetch settings from profile", err));
   }, [setPreset]);
 
+  const handleTogglePref = async (index: number) => {
+    const nextVal = !prefs[index];
+    const newPrefs = prefs.map((p, n) => (n === index ? nextVal : p));
+    setPrefs(newPrefs);
+
+    const updatedObj: NotificationPrefs = {
+      workoutReminders: newPrefs[0],
+      goalAchievements: newPrefs[1],
+      weeklyReport: newPrefs[2],
+      communityUpdates: newPrefs[3],
+    };
+    setNotificationPrefs(updatedObj);
+
+    // Workout reminders (Master Switch):
+    if (index === 0) {
+      if (nextVal) {
+        try {
+          const reminders = await getReminders();
+          await syncAllReminders(reminders);
+          notify("Workout reminders enabled & scheduled");
+        } catch (err) {
+          console.warn("Could not sync reminders", err);
+        }
+      } else {
+        await cancelAllReminderNotifications();
+        notify("All workout reminder notifications paused");
+      }
+    }
+
+    // Goal achievements:
+    if (index === 1) {
+      notify(nextVal ? "Milestone notifications enabled" : "Milestone notifications paused");
+    }
+
+    // Weekly progress report:
+    if (index === 2) {
+      if (nextVal) {
+        await scheduleWeeklyReportNotification();
+        notify("Weekly Sunday 10:00 AM summary scheduled");
+      } else {
+        await cancelWeeklyReportNotification();
+        notify("Weekly progress report notification turned off");
+      }
+    }
+  };
+
   const handleSaveChanges = async () => {
     setSaving(true);
     try {
+      setNotificationPrefs({
+        workoutReminders: prefs[0],
+        goalAchievements: prefs[1],
+        weeklyReport: prefs[2],
+        communityUpdates: prefs[3],
+      });
       await updateUser({
         units,
         themePreset: preset,
@@ -224,7 +299,7 @@ export function SettingsPage() {
                 <button 
                   type="button"
                   className={`w-10 h-6 rounded-full p-1 transition cursor-pointer ${prefs[i] ? "bg-[var(--color-lime)]" : "bg-white/10"}`} 
-                  onClick={() => setPrefs(prefs.map((p, n) => (n === i ? !p : p)))}
+                  onClick={() => handleTogglePref(i)}
                 >
                   <div className={`size-4 bg-white rounded-full transition ${prefs[i] ? "translate-x-4" : ""}`} />
                 </button>

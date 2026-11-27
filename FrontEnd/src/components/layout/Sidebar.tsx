@@ -1,11 +1,13 @@
 import { NavLink, useNavigate } from "react-router";
-import { Home, Dumbbell, Apple, TrendingUp, BarChart3, Bell, User, Settings, CircleHelp, LogOut, X } from "lucide-react";
+import { Home, Dumbbell, Apple, TrendingUp, BarChart3, Bell, User, Settings, CircleHelp, LogOut, X, ShieldCheck } from "lucide-react";
 import { Logo } from "../common/Logo";
 import { useApp } from "../../context/AppContext";
+import { isAdmin } from "../../app/authGuard";
 
 export function Sidebar({ mobileOpen, setMobileOpen }: { mobileOpen: boolean; setMobileOpen: (v: boolean) => void }) {
   const { notify } = useApp();
   const navigate = useNavigate();
+  const userIsAdmin = isAdmin();
   
   const navGroups = [
     { 
@@ -27,6 +29,14 @@ export function Sidebar({ mobileOpen, setMobileOpen }: { mobileOpen: boolean; se
         { to: "/dashboard/support", label: "Help Center", icon: CircleHelp }
       ] 
     },
+    ...(userIsAdmin ? [
+      {
+        caption: "ADMINISTRATION",
+        items: [
+          { to: "/admin", label: "Admin Panel", icon: ShieldCheck }
+        ]
+      }
+    ] : [])
   ];
 
   const handleSignOut = () => {

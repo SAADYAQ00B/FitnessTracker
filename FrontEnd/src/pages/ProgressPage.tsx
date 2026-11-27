@@ -7,6 +7,7 @@ import { Button } from "../components/common/Button";
 import { Modal } from "../components/common/Modal";
 import { getProgress, addMeasurement, ProgressData, ProgressChartPoint } from "../services/progressService";
 import { downloadCSVReport, printPDFReport } from "../services/reportService";
+import { triggerMilestoneNotification } from "../services/mobileNotificationService";
 
 export function ProgressPage() {
   const { notify } = useApp();
@@ -48,6 +49,9 @@ export function ProgressPage() {
     try {
       await addMeasurement(newEntry);
       notify("Measurement recorded successfully!");
+      if (newEntry.benchPress || newEntry.squat || newEntry.weight || newEntry.runTime5k) {
+        triggerMilestoneNotification("🏆 Milestone Achieved! You hit a new personal best on FITNESSTRACKER!");
+      }
       setIsModalOpen(false);
       loadProgress();
     } catch (err: any) {

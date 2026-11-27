@@ -24,6 +24,13 @@ const supportTicketSchema = new Schema({
     enum: ["open", "in-progress", "resolved"],
     default: "open",
   },
+  adminReply: {
+    type: String,
+    trim: true,
+  },
+  repliedAt: {
+    type: Date,
+  },
 }, { timestamps: true });
 
 const SupportTicket = mongoose.model("SupportTicket", supportTicketSchema);
